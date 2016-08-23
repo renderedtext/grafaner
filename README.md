@@ -23,17 +23,17 @@ echo '<API_TOKEN>' > ~/.grafaner/token
 Put the path to your Grafana server in the `~/.grafaner/server` file:
 
 ``` bash
-echo 'test-server.com' > ~/.grafaner/server
+echo 'http://test-server.com' > ~/.grafaner/server
 ```
 
 ## Usage
 
 First, create a template file:
 
-# TODO (define format)
+**TODO** (define format)
 
 ``` yml
-# production_overview.yml
+title: "Test Dashboard"
 ```
 
 Then create your dashboard with the following:
