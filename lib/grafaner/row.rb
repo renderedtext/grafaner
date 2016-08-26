@@ -2,7 +2,12 @@ class Row < Element
   options :width
 
   def initialize(title)
-    @hash = { :title => title }
+    super({
+      :title => title,
+      :collapse => false,
+      :editable => true,
+      :height => "250px"
+    })
   end
 
   def panel(title, &block)

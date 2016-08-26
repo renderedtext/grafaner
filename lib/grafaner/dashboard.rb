@@ -1,5 +1,16 @@
 class Dashboard < Element
-  options :title
+  options :title, :tags, :style, :timezone, :editable
+
+  def initialize
+    super({
+      :tags => [],
+      :style => "dark",
+      :timezone => "browser",
+      :editable => true,
+      :hideControls => false,
+      :sharedCrosshair => false
+    })
+  end
 
   def row(title, &block)
     row = Row.new(title)

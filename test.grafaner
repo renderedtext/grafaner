@@ -1,4 +1,5 @@
 title "Test"
+tags ["test1", "test2"]
 
 row "Some metric" do
   width 90
