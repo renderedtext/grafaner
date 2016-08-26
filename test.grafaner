@@ -1,0 +1,10 @@
+title "Test"
+
+row do
+  title "Some metric"
+  width 90
+
+  panel do
+    title "testtt"
+  end
+end

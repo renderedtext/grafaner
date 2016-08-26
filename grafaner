@@ -1,81 +1,58 @@
-#!/usr/bin/env ruby
+#!/bin/ruby
 
-require "yaml"
-require "json"
+class Element
+  def self.options(*names)
+    names.each do |name|
+      define_method(name) do |value|
+        raw_options(name => value)
+      end
+    end
+  end
 
-def error(message)
-  puts message
-  exit(1)
+  def self.subelements(*names)
+    names.each do |name|
+      define_method(name) do |&block|
+        klass_name = name.to_s.split("_").map(&:capitalize).join
+        element = Kernel.const_get(klass_name).new
+        element.instance_eval(&block)
+
+        raw_options(name => element.to_hash)
+      end
+    end
+  end
+
+  def initialize(hash = {})
+    @hash = hash
+  end
+
+  def to_hash
+    @hash
+  end
+
+  def raw_options(hash)
+    @hash = @hash.merge(hash)
+  end
 end
 
-def create_dashboard(dashboard)
-  json_template = dashboard.to_json
-
-  token  = File.read("~/.grafaner/token")
-  server = File.read("~/.grafaner/server")
-
-  File.write("/tmp/grafana-template", json_template)
-
-  headers = [
-    "-H \"Content-Type: application/json\"",
-    "-H \"Authorization: Bearer #{token}\""
-  ].join(" ")
-
-  `curl #{headers} -X POST --data /tmp/grafana-template #{server}/api/dashboards/db`
+class Panel < Element
+  options :title, :width
 end
 
-def load_template_file
-  template_path = ARGV[0]
+class Row < Element
+  options :title, :width
 
-  error "Template file not found" unless File.exists?(template_path)
-
-  template = File.read(template_path)
-
-  YAML.load(template)
+  subelements :panel
 end
 
-def validate_template(template)
-  error "Title can't be empty" if template["title"].nil? || template["title"].strip == ""
+class Dashboard < Element
+  options :title
+
+  subelements :row
 end
 
-def constuct_dashboard_json(template)
-  {
-    "dashboard" => {
-      "title" => template["title"],
-      "originalTitle" => template["title"],
-      "tags": [],
-      "style": "dark",
-      "timezone": "browser",
-      "editable": true,
-      "hideControls": false,
-      "sharedCrosshair": false,
-      "time" => {
-        "from" => "now-6h", "to" => "now"
-      },
-      "timepicker" => {
-        "refresh_intervals" => [
-          "5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"
-        ],
-        "time_options": [
-          "5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"
-        ]
-      },
-      "templating" => {
-        "list" => []
-      },
-      "annotations" => {
-        "list" => []
-      },
-      "schemaVersion" => 6,
-      "version" => 2
-    },
-    "overwrite" => false
-  }
-end
+template = File.read("./test.grafaner")
 
-template  = load_template_file
+dashboard = Dashboard.new
+dashboard.instance_eval(template)
 
-validate_template(template)
-dashboard = constuct_dashboard_json(template)
-
-p dashboard
+p dashboard.to_hash
