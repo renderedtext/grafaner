@@ -1,10 +1,27 @@
 title "Test"
 
-row do
-  title "Some metric"
+row "Some metric" do
   width 90
 
-  panel do
-    title "testtt"
+  panel "testss" do
+  end
+
+  panel "testss1" do
+  end
+
+  panel "testss1" do
+  end
+end
+
+row "Some metric" do
+  width 90
+
+  panel "testss" do
+  end
+
+  panel "testss1" do
+  end
+
+  panel "testss1" do
   end
 end

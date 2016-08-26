@@ -1,58 +1,7 @@
-#!/bin/ruby
+#!/usr/bin/env ruby
 
-class Element
-  def self.options(*names)
-    names.each do |name|
-      define_method(name) do |value|
-        raw_options(name => value)
-      end
-    end
-  end
+require_relative "lib/grafaner"
 
-  def self.subelements(*names)
-    names.each do |name|
-      define_method(name) do |&block|
-        klass_name = name.to_s.split("_").map(&:capitalize).join
-        element = Kernel.const_get(klass_name).new
-        element.instance_eval(&block)
+require "pp"
 
-        raw_options(name => element.to_hash)
-      end
-    end
-  end
-
-  def initialize(hash = {})
-    @hash = hash
-  end
-
-  def to_hash
-    @hash
-  end
-
-  def raw_options(hash)
-    @hash = @hash.merge(hash)
-  end
-end
-
-class Panel < Element
-  options :title, :width
-end
-
-class Row < Element
-  options :title, :width
-
-  subelements :panel
-end
-
-class Dashboard < Element
-  options :title
-
-  subelements :row
-end
-
-template = File.read("./test.grafaner")
-
-dashboard = Dashboard.new
-dashboard.instance_eval(template)
-
-p dashboard.to_hash
+pp update
