@@ -3,6 +3,7 @@ require_relative "grafaner/dashboard"
 require_relative "grafaner/row"
 require_relative "grafaner/panel"
 require_relative "grafaner/graph"
+require_relative "grafaner/metric"
 
 require "json"
 

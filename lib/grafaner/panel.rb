@@ -24,18 +24,30 @@ class Panel < Element
       #   :"threshold2Color" => "rgba(234, 112, 112, 0.22)",
       #   :"thresholdLine" => false
       # },
-      "legend": {
-        "alignAsTable" => true,
-        "avg" => false,
-        "current" => true,
-        "hideEmpty" => false,
-        "max" => false,
-        "min" => false,
-        "rightSide" => true,
-        "show" => true,
-        "total" => false,
-        "values" => true
-      }
+      # "legend": {
+      #   "alignAsTable" => true,
+      #   "avg" => false,
+      #   "current" => true,
+      #   "hideEmpty" => false,
+      #   "max" => false,
+      #   "min" => false,
+      #   "rightSide" => true,
+      #   "show" => true,
+      #   "total" => false,
+      #   "values" => true
+      # },
+      :targets => []
     }))
+  end
+
+  def metric(alias_name = nil, &block)
+    metric = Metric.new(alias_name)
+    metric.instance_eval(&block)
+
+    add_target(metric)
+  end
+
+  def add_target(target)
+    @hash[:targets] = (@hash[:targets] || []) << target.to_hash
   end
 end
