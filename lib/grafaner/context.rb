@@ -35,3 +35,15 @@ class GrafanerContext
     @@current_context[name]
   end
 end
+
+def set(name, value = nil, &block)
+  GrafanerContext.set(name, value, &block)
+end
+
+def append(name, value = nil, &block)
+  GrafanerContext.append(name, value, &block)
+end
+
+def get(name)
+  GrafanerContext.get(name)
+end
